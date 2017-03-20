@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<!-- Include meta tag to ensure proper rendering and touch zooming-->
+		<title>Marketplace</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="../../jquery/jquery-ui.min.css">
+		<link rel="stylesheet" href="../../jquery-mobile/jquery.mobile-1.4.5.min.css">
+		<script src="../../jquery/external/jquery/jquery.js"></script>
+		<script src="../../jquery/jquery-ui.min.js"></script>
+		<script src="../../jquery-mobile/jquery.mobile-1.4.5.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script>
+		$(window).load(function() {
+			$.mobile.ajaxEnabled = false;
+		
+		});
+		</script>
+	</head>
+	<body>
+	<div class="container" style="width:900px;">
+		<div>
+            <input type="text" placeholder="Cari produk, kategori, atau merk" value="" name="q" id="q"/>
+        <!--     <input type="button" name="cari" id="cari" value="Cari" class="btn btn-info" /> -->
+		<select class='form-control' name='kategori' id='kategori'>
+				<option value='0' selected> Termurah </option>
+				<option value='1'> Terbaru </option>
+		</select>
+        </div>
+		
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<ol class="nav navbar-nav" id="nav" name="nav">
+			  <li><a href="lazada.php">Lazada</a></li>
+			  <li><a href="bukalapak.php">BukaLapak</a></li>
+			  <li><a href="kaskus.php">Kaskus FJB</a></li>
+			  <li><a href="olx.php">OLX</a></li>
+			</ol>
+		  </div>
+		</nav>
+		
+
+		<div id="loading" style="display:none;"><img src="http://martjackassests.azureedge.net/css/themes/mjt02012319/images/main/show_loader.gif" alt="loading..." /></div>
+
+		<div id="ajax-content" style="display:none;">		</div>
+		<div id="tombol" class="col-md-3" style="display:none;">
+		<input type="button" name="next" id="next" value="Load More..." class="btn btn-info"/> </div>
+		<div style="display:none";><input type="text" value="1" name="page" id="page" style="text-align:center"/></div>
+	
+	</div>
+	</body>
+</html>
+
+<script>
+	var textjson = '[{"marketplace":"Lazada"},{"marketplace":"MatahariMall"},{"marketplace":"BukaLapak"},{"marketplace":"KaskusFJB"},{"marketplace":"OLX"}]';
+function numberWithDots(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+$(document).ready(function() {	
+	$("#nav li a").click(function() {
+		var statu = 'menu';
+		var q = $('#q').val();
+		var kategori= $('#kategori').val();
+		//var page = $('#page').val();
+		if(q != '')  
+        {
+			$("#nav li a").removeClass('active');
+			$(this).addClass('active');
+			$('#loading').show();
+			$('#ajax-content').hide();
+			$('#tombol').hide();
+			$.ajax({ url: this.href, 
+					type : 'POST',
+					dataType: 'json',
+					data:{"q":q, "statu" :statu, "kategori":kategori, "json" : textjson},
+					success: function(data2) {
+					$('#loading').hide();
+					$('#ajax-content').fadeIn('slow');
+					
+					var data3 = JSON.stringify(data2);
+					var data = JSON.parse(data3);
+					mp = data.mp;
+					textjson = JSON.stringify(data.json);
+					array = JSON.stringify(data.arr);
+					kategorinext = JSON.stringify(data.kategori);
+					kata = JSON.stringify(data.kata);
+					pages = JSON.stringify(data.page);
+					link = JSON.stringify(data.link);
+					if (data.arr.length > 0)
+					{
+						$('#tombol').fadeIn('slow');
+					buatTabel = "<table class='table table-bordered'>";
+					for (var i = 0; i<data.arr.length; i++)
+					{
+						if (data.arr[i].gambar != null)
+							gambar = data.arr[i].gambar ;
+						else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
+						gambar2 = gambar+"";
+						nama = data.arr[i].nama;
+						harga = data.arr[i].harga;
+						buatTabel += "<tr>"
+						+ "<td>" + (i+1) + "</td>" 
+						+ "<td>" + "<img src="+ gambar2+" alt="+nama+">  " + "</td>"
+						+ "<td>" + nama + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+					}
+						buatTabel+= "</table>"
+					}
+					else { buatTabel = "Data dengan nama produk, kategori atau merek "+ kata +" tidak tersedia";
+					
+					}$("#ajax-content").empty().append(buatTabel);
+					//alert (pages);
+					//alert (link);
+					},
+					error: function (request, status, error) {
+						alert(request.responseText);
+					}
+
+			});
+		}
+		else
+			 alert("Masukkan nama produk, kategori, atau merek");  
+    return false;
+    });
+	$('#next').click(function(){
+		//var q = $('#q').val();
+		//var kategori= $('#kategori').val();
+		var status = 'next';
+			document.getElementById("page").value=page;
+			var urll;
+			if (mp=='0')
+				urll = 'lazada.php';
+			else if (mp=='1')
+				urll = 'mataharimall.php';
+			else if (mp=='2')
+				urll = 'bukalapak.php';
+			else if (mp=='3')
+				urll = 'kaskus.php';
+			else if (mp=='4')
+				urll = 'olx.php';	
+			//alert (kata);
+			$.ajax({ url: urll, 
+					type : 'POST',
+					dataType: 'json',
+					data:{"q":kata, "statu" :status, "kategori":kategorinext, "json" : textjson},
+					success: function(data2) {
+					$('#loading').hide();
+					$('#ajax-content').fadeIn('slow');
+					$('#tombol').fadeIn('slow');
+					var data3 = JSON.stringify(data2);
+					var data = JSON.parse(data3);
+					mp = data.mp;
+					pages = JSON.stringify(data.page);
+					link = JSON.stringify(data.link);
+					textjson = JSON.stringify(data.json);
+					array = JSON.stringify(data.arr);
+					if (data.arr.length > 0)
+					{
+					buatTabel = "<table class='table table-bordered'>";
+					for (var i = 0; i<data.arr.length; i++)
+					{
+						if (data.arr[i].gambar != null)
+							gambar = data.arr[i].gambar ;
+						else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
+						gambar2 = gambar+"";
+						nama = data.arr[i].nama;
+						harga = data.arr[i].harga;
+						buatTabel += "<tr>"
+						+ "<td>" + (i+1) + "</td>" 
+						+ "<td>" + "<img src="+ gambar2+" alt="+nama+">  " + "</td>"
+						+ "<td>" + nama + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+					}
+						buatTabel+= "</table>"
+					}
+					else buatTabel = "Data dengan nama produk, kategori atau merek tersebut tidak tersedia"; 
+					$("#ajax-content").empty().append(buatTabel);
+					//alert (pages);
+					},
+					error: function (request, status, error) {
+						alert(request.responseText);
+					}
+
+			});		
+		
+	});
+});
+</script>
