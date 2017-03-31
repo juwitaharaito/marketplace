@@ -73,7 +73,7 @@
 			{
 				$info = curl_getinfo($ch2);
 				if ($info['redirect_url']!="")
-					$redirect = $info['redirect_url'].'?'.$tambahan.$pageurl;
+					$redirect = $info['url'].'?'.$tambahan.$pageurl;
 				else
 					$redirect = $info['url'].$tambahan.$pageurl;
 			}
