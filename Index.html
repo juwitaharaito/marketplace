@@ -17,7 +17,29 @@
 			$.mobile.ajaxEnabled = false;
 		
 		});
+		
 		</script>
+		<style>
+		.nav li a {
+			background: #BDBDBD; /* Old browsers */
+			background: linear-gradient( #BDBDBD,#F2F2F2 ) repeat scroll 0 0 #FFFFFF !important;
+			background: -moz-linear-gradient( #BDBDBD,#F2F2F2 ) repeat scroll 0 0 #FFFFFF !important; /* FF3.6+ */
+			background: -webkit-linear-gradient( #BDBDBD,#F2F2F2 ) repeat scroll 0 0 #FFFFFF !important; /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient( #BDBDBD,#F2F2F2 ) repeat scroll 0 0 #FFFFFF !important; /* Opera 11.10+ */
+			background: -ms-linear-gradient( #BDBDBD,#F2F2F2 ) repeat scroll 0 0 #FFFFFF !important; /* IE10+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#946ab1',GradientType=0 ); /* IE6-9 */   
+		}
+
+		.nav li .active {
+			background: linear-gradient(#5393C5, #6FACD5) repeat scroll 0 0 #5393C5 !important;
+			background: #67497a; /* Old browsers */
+			background: linear-gradient(#5393C5, #6FACD5) repeat scroll 0 0 #5393C5 !important; /* FF3.6+ */
+			background: -webkit-linear-gradient(#5393C5, #6FACD5) repeat scroll 0 0 #5393C5 !important; /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(#5393C5, #6FACD5) repeat scroll 0 0 #5393C5 !important; /* Opera 11.10+ */
+			background: -ms-linear-gradient(#5393C5, #6FACD5) repeat scroll 0 0 #5393C5 !important; /* IE10+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5393C5', endColorstr='#6FACD5',GradientType=0 ); /* IE6-9 */       
+		}
+		</style>
 	</head>
 	<body>
 	<div class="container" style="width:900px;">
@@ -31,12 +53,14 @@
         </div>
 		
 		<nav class="navbar navbar-default">
-		  <div class="container-fluid">
+		  <div class="container-fluid" style="background: linear-gradient( #BDBDBD,#F2F2F2 );">
 			<ol class="nav navbar-nav" id="nav" name="nav">
-			  <li><a href="lazada.php">Lazada</a></li>
-			  <li><a href="bukalapak.php">BukaLapak</a></li>
-			  <li><a href="kaskus.php">Kaskus FJB</a></li>
-			  <li><a href="olx.php">OLX</a></li>
+			  <li><a href="lazada1.php">Lazada</a></li>
+			  <li><a href="bukalapak1.php">BukaLapak</a></li>
+			  <li><a href="kaskus1.php">Kaskus FJB</a></li>
+			  <li><a href="olx1.php">OLX</a></li>
+			  <li><a href="jd1.php">JD.ID</a></li>
+			  <li><a href="blibli1.php">blibli</a></li>
 			</ol>
 		  </div>
 		</nav>
@@ -54,23 +78,28 @@
 </html>
 
 <script>
+var sudah = false;
 	var textjson = '[{"marketplace":"Lazada"},{"marketplace":"MatahariMall"},{"marketplace":"BukaLapak"},{"marketplace":"KaskusFJB"},{"marketplace":"OLX"}]';
 function numberWithDots(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 $(document).ready(function() {	
+
 	$("#nav li a").click(function() {
+		
 		var statu = 'menu';
 		var q = $('#q').val();
 		var kategori= $('#kategori').val();
 		//var page = $('#page').val();
 		if(q != '')  
         {
+			sudah = true;
 			$("#nav li a").removeClass('active');
 			$(this).addClass('active');
 			$('#loading').show();
 			$('#ajax-content').hide();
 			$('#tombol').hide();
+			//alert (kategori);
 			$.ajax({ url: this.href, 
 					type : 'POST',
 					dataType: 'json',
@@ -78,7 +107,6 @@ $(document).ready(function() {
 					success: function(data2) {
 					$('#loading').hide();
 					$('#ajax-content').fadeIn('slow');
-					
 					var data3 = JSON.stringify(data2);
 					var data = JSON.parse(data3);
 					mp = data.mp;
@@ -86,32 +114,48 @@ $(document).ready(function() {
 					array = JSON.stringify(data.arr);
 					kategorinext = JSON.stringify(data.kategori);
 					kata = JSON.stringify(data.kata);
+					kasus = JSON.stringify(data.kasus);
 					pages = JSON.stringify(data.page);
 					link = JSON.stringify(data.link);
-					if (data.arr.length > 0)
+					pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
+					//alert (pagecount);
+					//alert (kasus);
+					if (kasus != '"0"')
 					{
-						$('#tombol').fadeIn('slow');
-					buatTabel = "<table class='table table-bordered'>";
-					for (var i = 0; i<data.arr.length; i++)
-					{
-						if (data.arr[i].gambar != null)
-							gambar = data.arr[i].gambar ;
-						else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
-						gambar2 = gambar+"";
-						nama = data.arr[i].nama;
-						harga = data.arr[i].harga;
-						buatTabel += "<tr>"
-						+ "<td>" + (i+1) + "</td>" 
-						+ "<td>" + "<img src="+ gambar2+" alt="+nama+">  " + "</td>"
-						+ "<td>" + nama + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+						if (data.arr.length > 0)
+						{
+							if (pagecount!=pages)
+							$('#tombol').fadeIn('slow');
+							buatTabel = "<table class='table table-bordered'>";
+							for (var i = 0; i<data.arr.length; i++)
+							{
+								if (data.arr[i].gambar != null)
+									gambar = data.arr[i].gambar ;
+								else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
+								gambar2 = gambar+"";
+								nama = data.arr[i].nama;
+								harga = data.arr[i].harga;
+								url = data.arr[i].url;
+								buatTabel += "<tr>"
+								+ "<td>" + (i+1) + "</td>" 
+								+ "<td>" + "<img src="+ gambar2+" width='200' height='200' alt="+nama+">  " + "</td>"
+								+ "<td>" + "<a target='_blank' href="+url+">"+nama+"</a>" + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+							}
+								buatTabel+= "</table>"
+						}
+						else 
+							buatTabel = "Data dengan nama produk, kategori atau merek "+ kata +" tidak tersedia";
+						$("#ajax-content").empty().append(buatTabel);
+						
+						//alert (data3);
 					}
-						buatTabel+= "</table>"
-					}
-					else { buatTabel = "Data dengan nama produk, kategori atau merek "+ kata +" tidak tersedia";
+					//
+					//
 					
-					}$("#ajax-content").empty().append(buatTabel);
-					//alert (pages);
-					//alert (link);
+					else
+						$("#ajax-content").empty().append("Lazada tidak memiliki filter 'Terbaru'"); 
+					//alert (kasus);
+					
 					},
 					error: function (request, status, error) {
 						alert(request.responseText);
@@ -123,38 +167,133 @@ $(document).ready(function() {
 			 alert("Masukkan nama produk, kategori, atau merek");  
     return false;
     });
+	$('#kategori').change(function(){
+		if (sudah)
+		{
+			$('#loading').show();
+			$('#ajax-content').hide();
+			$('#tombol').hide();
+			var statu = "kategori";
+			var kategori = $('#kategori').val();
+			var urll;
+			if (mp=='0')
+				urll = 'lazada1.php';
+			else if (mp=='1')
+				urll = 'mataharimall1.php';
+			else if (mp=='2')
+				urll = 'bukalapak1.php';
+			else if (mp=='3')
+				urll = 'kaskus1.php';
+			else if (mp=='4')
+				urll = 'olx1.php';
+			else if (mp=='5')
+				urll = 'jd1.php';
+			else if (mp=='6')
+				urll = 'blibli1.php';
+			if ((mp=='0') && (kategori=='1'))
+			{
+				$('#loading').hide();
+				$('#ajax-content').fadeIn('slow');
+				$("#ajax-content").empty().append("Lazada tidak memiliki filter 'Terbaru'"); 
+			}
+			else
+			{
+				$.ajax({ url: urll, 
+						type : 'POST',
+						dataType: 'json',
+						data:{"q":kata, "statu" :statu, "kategori":kategori, "json" : textjson},
+						success: function(data2) {
+						$('#loading').hide();
+						$('#ajax-content').fadeIn('slow');
+						var data3 = JSON.stringify(data2);
+						var data = JSON.parse(data3);
+						mp = data.mp;
+						textjson = JSON.stringify(data.json);
+						array = JSON.stringify(data.arr);
+						kategorinext = JSON.stringify(data.kategori);
+						kata = JSON.stringify(data.kata);
+						kasus = JSON.stringify(data.kasus);
+						pages = JSON.stringify(data.page);
+						link = JSON.stringify(data.link);
+						pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
+						//alert (pagecount);
+						//alert (link);
+						if (data.arr.length > 0)
+						{
+							if (pagecount!=pages)
+							$('#tombol').fadeIn('slow');
+							buatTabel = "<table class='table table-bordered'>";
+							for (var i = 0; i<data.arr.length; i++)
+							{
+								if (data.arr[i].gambar != null)
+									gambar = data.arr[i].gambar ;
+								else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
+								gambar2 = gambar+"";
+								nama = data.arr[i].nama;
+								harga = data.arr[i].harga;
+								url = data.arr[i].url;
+								buatTabel += "<tr>"
+								+ "<td>" + (i+1) + "</td>" 
+								+ "<td>" + "<img src="+ gambar2+" width='200' height='200' alt="+nama+">  " + "</td>"
+								+ "<td>" + "<a target='_blank' href="+url+">"+nama+"</a>" + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+							}
+								buatTabel+= "</table>"
+						}
+							else buatTabel = "Data dengan nama produk, kategori atau merek tersebut tidak tersedia"; 
+						
+						$("#ajax-content").empty().append(buatTabel);
+						//alert (pages);
+						},
+						error: function (request, status, error) {
+							alert(request.responseText);
+						}
+
+					});	
+			}}
+	});
 	$('#next').click(function(){
 		//var q = $('#q').val();
 		//var kategori= $('#kategori').val();
-		var status = 'next';
-			document.getElementById("page").value=page;
+		var statu = 'next';
+			//document.getElementById("page").value=page;
 			var urll;
 			if (mp=='0')
-				urll = 'lazada.php';
+				urll = 'lazada1.php';
 			else if (mp=='1')
-				urll = 'mataharimall.php';
+				urll = 'mataharimall1.php';
 			else if (mp=='2')
-				urll = 'bukalapak.php';
+				urll = 'bukalapak1.php';
 			else if (mp=='3')
-				urll = 'kaskus.php';
+				urll = 'kaskus1.php';
 			else if (mp=='4')
-				urll = 'olx.php';	
+				urll = 'olx1.php';	
+			else if (mp=='5')
+				urll = 'jd1.php';
+			else if (mp=='6')
+				urll = 'blibli1.php';
 			//alert (kata);
 			$.ajax({ url: urll, 
 					type : 'POST',
 					dataType: 'json',
-					data:{"q":kata, "statu" :status, "kategori":kategorinext, "json" : textjson},
+					data:{"q":kata, "statu" :statu, "kategori":kategorinext, "json" : textjson},
 					success: function(data2) {
 					$('#loading').hide();
 					$('#ajax-content').fadeIn('slow');
-					$('#tombol').fadeIn('slow');
 					var data3 = JSON.stringify(data2);
 					var data = JSON.parse(data3);
 					mp = data.mp;
-					pages = JSON.stringify(data.page);
+					var pages = JSON.stringify(data.page).replace(/"/gi,'');;
 					link = JSON.stringify(data.link);
 					textjson = JSON.stringify(data.json);
+					var pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
+					//alert (pagecount);
 					array = JSON.stringify(data.arr);
+					//alert (link);
+					//alert (data.arr.length);
+					if (pagecount==pages)
+					{
+						$('#tombol').hide();
+					}
 					if (data.arr.length > 0)
 					{
 					buatTabel = "<table class='table table-bordered'>";
@@ -163,23 +302,26 @@ $(document).ready(function() {
 						if (data.arr[i].gambar != null)
 							gambar = data.arr[i].gambar ;
 						else gambar = "https://smoothtouchcosmetics.com/wp-content/uploads/2016/08/No-Image-Available.jpg";
-						gambar2 = gambar+"";
-						nama = data.arr[i].nama;
-						harga = data.arr[i].harga;
+						var gambar2 = gambar+"";
+						var nama = data.arr[i].nama;
+						var harga = data.arr[i].harga;
+						url = data.arr[i].url;
 						buatTabel += "<tr>"
 						+ "<td>" + (i+1) + "</td>" 
-						+ "<td>" + "<img src="+ gambar2+" alt="+nama+">  " + "</td>"
-						+ "<td>" + nama + " <BR>" + numberWithDots(harga)  + "</td></tr>"
+						+ "<td>" + "<img src="+ gambar2+" width='200' height='200' alt="+nama+">  " + "</td>"
+						+ "<td>" + "<a target='_blank' href="+url+">"+nama+"</a>" + " <BR>" + numberWithDots(harga)  + "</td></tr>"
 					}
 						buatTabel+= "</table>"
 					}
 					else buatTabel = "Data dengan nama produk, kategori atau merek tersebut tidak tersedia"; 
 					$("#ajax-content").empty().append(buatTabel);
-					//alert (pages);
+					//alert (pages+' '+pagecount);
+					
 					},
 					error: function (request, status, error) {
 						alert(request.responseText);
 					}
+					
 
 			});		
 		
