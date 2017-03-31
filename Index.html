@@ -115,7 +115,7 @@ $(document).ready(function() {
 					kategorinext = JSON.stringify(data.kategori);
 					kata = JSON.stringify(data.kata);
 					kasus = JSON.stringify(data.kasus);
-					pages = JSON.stringify(data.page);
+					pages = JSON.stringify(data.page).replace(/"/gi,'');
 					link = JSON.stringify(data.link);
 					pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
 					//alert (pagecount);
@@ -213,7 +213,7 @@ $(document).ready(function() {
 						kategorinext = JSON.stringify(data.kategori);
 						kata = JSON.stringify(data.kata);
 						kasus = JSON.stringify(data.kasus);
-						pages = JSON.stringify(data.page);
+						pages = JSON.stringify(data.page).replace(/"/gi,'');
 						link = JSON.stringify(data.link);
 						pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
 						//alert (pagecount);
@@ -282,7 +282,7 @@ $(document).ready(function() {
 					var data3 = JSON.stringify(data2);
 					var data = JSON.parse(data3);
 					mp = data.mp;
-					var pages = JSON.stringify(data.page).replace(/"/gi,'');;
+					var pages = JSON.stringify(data.page).replace(/"/gi,'');
 					link = JSON.stringify(data.link);
 					textjson = JSON.stringify(data.json);
 					var pagecount = JSON.stringify(data.pagecount).replace(/"/gi,'');
