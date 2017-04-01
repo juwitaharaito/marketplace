@@ -93,7 +93,7 @@
 					$json[5]['katakunci'][$indexkeywords]['kategori'][$kategori]['hal'][$page-1]['items'][$a]['gambar']= $temp3[1];
 					$a++;
 				}
-				preg_match('/<a href="(.+?)" target="_blank">/',$temp,$temp5);
+				preg_match('/<a class="btn-buy" href="(.+?)" target="_blank">/',$temp,$temp5);
 				if ($temp5[1] != "")
 				{
 					$json[5]['katakunci'][$indexkeywords]['kategori'][$kategori]['hal'][$page-1]['items'][$c]['url']= $temp5[1];
@@ -136,6 +136,7 @@
 			$ket = "menampilkan yang sudah ada dan bukan load more";
 		$array =[];
 		$j = 0;
+
 		foreach ($json[5]['katakunci'][$indexkeywords]['kategori'][$kategori]['hal'] as $pages)
 		{
 			foreach ($pages['items'] as $items)
